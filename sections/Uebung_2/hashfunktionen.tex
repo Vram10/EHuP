@@ -1,0 +1,23 @@
+
+\section{Hashfunktionen}
+
+\subsection{Erläutern Sie die folgenden Begriffe und grenzen Sie diese voneinander ab}
+\paragraph{(a) Preimage resistance} Eine Hashfunktion ist genau dann Preimage Resistent, wenn bei zur Verfügung stehender Rechenpower aus einem gegegbenen Hashwert $h(x_0)$ kein möglicher Input $x_i$ gefunden werden kann, der auf diesen Hashwert abbildet. Dabei liegt die Betonung auf dem Finden eines \textit{möglichen} $x_i$, es muss also \textit{nicht} exakt der verwendete Input $x_0$ gefunden werden. 
+\paragraph{(b) Second preimage resistance} Bei Hashfunktionen mit Second Preimage Resistenz kann zu einem gegebenen Paar $(x_i, h(x_i))$ kein weiteres $x_{j \neq i}$ gefunden werden, das auf denselben Hashwert $h(x_i)$ abbildet. In der Praxis würde eine schlechte Preimage-Resistenz bedeuten, dass bspw. bei einem Wechsel des Passworts (dessen Hash zur Authentifikation geprüft wird) derselbe Hashwert wieder herauskommen könnte, wodurch das alte Passwort gültig bliebe.
+\paragraph{(c) Collision resistance} Bei einer kollisionsresistenten Hashfunktion ist die Wahrscheinlichkeit minimal, dass bei zwei zufällig gewählten unterschiedlichen Eingabewerten $x_i, x_{j \neq i}$ jeweils auf denselben Hashwert abgebildet wird. Es wird also "verhindert", dass gilt: $h(x_i) \neq h(x_{j \neq i})$, bei (echt-)zufällig gewählten Eingabewerten. In der Praxis bedeutet das, dass bspw. ein Mitarbeiter sich bei seinem Arbeitskollegen mit seinem Passwort anmelden könnte, obwohl diese unterschiedliche Passwörter besitzen. Hier gilt wieder das Geburtstagsparadoxon, dass bei einer Kardinalität $k$ nach $\lceil 1,2 \cdot \sqrt{k} \rceil$ (echt-)zufällig generierten Werten eine Kollision auftritt.
+
+\subsection{Gegeben sei die Funktion $H : \{0, 1\}^\ast \rightarrow \{0, 1\}^{80}$ . Warum ist diese per se nicht geeignet für Passworthashing? Begründen Sie ihre Antwort mathematisch.}
+Diese Hashfunktion bildet auf eine Menge der Kardinalität $2^{80}$ ab. Es ist also bereits nach
+$$
+\lceil 1,2 \cdot \sqrt{2^{80}} \rceil = \lceil 1,2 \cdot 2^{40} \rceil 
+$$
+erzeugten Werten mit einer Kollision zu rechnen. Es handelt ich also um ein 40-Bit-Problem.
+
+\subsection{Nennen Sie mit Begründung eine Hashfunktion H, die für Passwort Hashing geeignet ist.}
+\paragraph{Hinweis:} \textit{Es reicht nicht eine konkrete Hashfunktion zu nennen mit der Begründung, dass diese das BSI empfiehlt. Hier müssten auch Gründe für diese Entscheidung genannt werden.}
+
+Eine gute Wahl ist der SHA-3. Dieser ist der Gewinner der SHA-3 Competition und gilt als gute Wahl für neue Anwendungen. Seine möglichen Ausgaben haben eine Bitbreite von $224$, $256$, $384$ oder $512$ Bit. Ein TMTO-Angriff besitzt eine Suchzeit von
+$$
+\mathcal{O}(\log n \cdot  2^\frac{2 \cdot n}{3})
+$$
+Somit liegt bei dem SHA-3 eine Suchzeit von $\mathcal{O}(2^{152})$ bis $\mathcal{O}(2^{343})$ vor. Das ist lang.

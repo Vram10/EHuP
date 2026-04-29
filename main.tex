@@ -1,0 +1,94 @@
+\documentclass[12pt,a4paper]{article}
+
+% ---------------- Pakete ----------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[german]{babel}
+\selectlanguage{ngerman}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{literatur.bib} 
+\geometry{
+    left=3cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+\onehalfspacing
+
+% ---------------- Header / Footer ----------------
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{Ethical Hacking und Pentesting}
+\fancyhead[R]{\leftmark}
+
+\fancyfoot[L]{Uebung 2}
+\fancyfoot[R]{\thepage}
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ---------------- Dokument ----------------
+\begin{document}
+
+% ---------- Titelblatt ----------
+\begin{titlepage}
+\centering
+
+\vspace{2cm}
+
+{\Huge \textbf{Ethical Hacking und Pentesting}}\\[0.5cm]
+{\LARGE Uebung 3}
+
+\vspace{2cm}
+
+\textbf{Modul: Ethical Hacking und Pentesting SS26} \\
+\textbf{Betreuer: Patrick Felke und Frederik Gosewehr} 
+
+\vspace{3cm}
+
+\textbf{Autor(en)}\\
+Jonas Baumann \\
+Matrikelnummer: 7025016
+
+\vspace{0.5cm}
+
+Julian van Dyken \\
+Matrikelnummer: 7024745
+
+\vspace{0.5cm}
+
+Marvin Hahn \\
+Matrikelnummer: 7024810
+
+\vspace{3cm}
+
+\textbf{Abgabedatum: 19.04.26} 
+
+\end{titlepage}
+
+% ---------- Inhaltsverzeichnis (ohne Seitenzahl) ----------
+\pagenumbering{gobble}
+
+\tableofcontents
+\newpage
+
+% ---------- Seitenzahlen starten hier ----------
+\pagenumbering{arabic}
+
+% ---------- Inhalt ----------
+\include{sections/Uebung_3/poodle}
+\include{sections/Uebung_3/Heartbleed}
+\include{sections/Uebung_3/mining}
+\include{sections/Uebung_3/Verschiedene Angriffe}
+\printbibliography
+\end{document}

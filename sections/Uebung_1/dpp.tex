@@ -1,0 +1,15 @@
+\section{DPP/ Easy Connect}
+\subsection{Wie funktioniert bei DPP der Schlüsselaustausch des Preshared Keys. Beschreiben Sie beide möglichen Varianten.}
+
+\begin{enumerate}
+    \item Auf dem Enrollee (z.B. smarte Glühbirne) ist ein QR Code aufgedruckt, dieser kann dann mit einem Handy gescannt werden. Darüber wird dann der PSK ausgetauscht.
+    \item Es wird auf einem Smart-Gerät (z.B. TV) ein QR Code angezeigt. Dieser kann dann von einem Handy, welches in diesem Fall der Enrollee ist gescannt werden. Darüber wird dann der PSK übertragen. Bei diesem Fall muss es keinen festen Aufdruck geben.
+\end{enumerate}
+
+\subsection{Bei dem Diffie-Hellman Initiatorschlüssel $g^{a_1}$ ist nicht signiert. Warum ist das unkritisch im Hinblick auf MitM?}
+
+Weil es einen PSK gibt, den der Angreifer nicht kennt. Dieser geht in die Berechnungen des DHKE mit ein. Somit kann ein Angreifer ohne die Kenntnis des PSK keinen gültigen DHKE durchführen. Dadurch ist auch kein MitM möglich.
+
+\subsection{Warum kann man die Angriffe gegen WPS(Pixie-Dust, Online Bruteforce) bei DPP nicht mehr einsetzen?}
+
+Weil DPP kein PIN Verfahren verwendet, somit gibt es keinen kleinen kleinen Schlüssel mehr. DPP verwenden ECDHKE mit 256 Bit und verwendet gute Zufallsgeneratoren. Auf dieses System ist kein Effizienter Angriff bekannt. Aufgrund der guten Zufallsgeneratoren ist es auch nicht möglich schlecht NONCEs auszunutzen.

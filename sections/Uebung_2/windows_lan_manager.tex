@@ -1,0 +1,18 @@
+\section{Windows Lan Manager}
+\subsection{Welche Komplexität hat ein Brute Force-Angriff und der Angriff mittels Schlüsselteilung, wenn beim Windows Lan Manager die einzelnen Buchstaben für die Passworte aus dem Alphabet $\{0, 1\}^8$ gewählt werden? Geben sie kurz die Rechenwege an.}
+
+Wenn beim Windows Lan Manager die Buchstaben aus $\{0, 1\}^8$ gewählt werden und nicht mit Nullen aufgefüllt werden, dann ergibt sich folgende Rechnung für den Brute Force-Angriff:
+
+Das Passwort besteht aus 14 Buchstaben, die je aus 8 Bit bestehen.
+
+$$ 
+(2^8)^{14} = 2^{8 \cdot 14} =2^{112} 
+$$
+Somit ergibt sich für den Brute Force-Angriff eine Komplexität von $2^{112}$.
+
+Bei der Schlüsselteilung ist dies etwas anders. Es ist möglich, die erste Hälfte des Hashes zu erzeugen und schon mal zu bestätigen, genauso ist es auch mit der zweiten Hälfte möglich. 
+
+$$
+2 \cdot (2^8)^7 = 2 \cdot 2^{8 \cdot 7} = 2 \cdot 2^{56} = 2^{57}
+$$
+Somit ergibt sich für den Angriff mittels Schlüsselteilung eine Komplexität von $2^{57}$.
