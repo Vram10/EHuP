@@ -1,0 +1,40 @@
+\section{Grundlagen Buffer Overflows}
+
+\paragraph{a) Beschreiben Sie den Aufbau eines typischen Prozess-Stackframes und gehen Sie dabei besonders auf die verwendeten Register und deren Bedeutung ein. Ebenso gilt es zu beschreiben, was bei einem Funktionsaufruf im Detail auf dem Stackframe passiert. Dabei sind die Begriff Stack und Base-, Instruction Pointer zu verwenden.}
+
+
+\paragraph{b) Was ist ein Pointer? Gibt es Pointer in Java?}
+Ein Pointer ist ein Zeiger auf eine Adresse im Speicher. Im Gegensatz zu Variablen, in denen direkt Werte gespeichert werden, zeigt ein Pointer auf eine Adresse im Speicher. In dieser Adresse können dann Werte gespeichert sein. Beispielsweise können Pointer auf Objekte oder auf den Start einer Zeichenkette zeigen. Durch eine Dereferenzierung ist es dann möglich auf den Inhalt der Adresse zuzugreifen. In Java gibt es Pointer nicht direkt, also sie können nicht direkt von den Entwicklern verwendet werden, sondern werden versteckt, im Hintergrund von Java verwendet. Wenn in Java ein neues Objekt erzeugt wird, funktioniert dies im Hintergrund auch mit Pointern, auch wenn man als Entwicklerin nicht direkt die Pointer beeinflussen kann.
+
+\paragraph{c) Beschreiben Sie, wie ein Bufferoverflow durchgeführt wird und welche Bedingungen gegeben seien müssen, damit dieser überhaupt erfolgreich ausgeführt werden kann. Gehen Sie dabei besonders auf die Rolle von EIP und ESP ein. Beschreiben Sie zusätzlich, wie man in der Praxis als Angreifer Bufferoverflow anfällige Prozesse/Code detektiert.}
+
+\paragraph{d) Welche Varianten von Buffer overflows gibt es? Warum sind diese nicht ohne weiteres in Java und ähnlichen Sprachen möglich? Wie kann man heutzutage Buffer overflows verhindern? Gehen Sie dabei auf hardware- und softwareseitige Maßnahmen ein.}
+Die beiden gängigsten und bekanntesten Buffer overflows sind der Stack und der Heap based Buffer overflow. Diese sind nicht direkt in Java möglich, weil es Programmiererinnen in Java nicht direkt möglich ist Pointer Arithmetik zu betreiben. Die Pointer und Buffer werden unter der Haube von Java verwendet und nicht direkt von den Programmiererinnen. Dadurch werden Programmierfehler, die zu Buffer overflows führen könnten verhindert. Es gibt verschiedene Möglichkeiten heutzutage Buffer overflows zu verhindern, z.B. gibt es in Hardware die Möglichkeite bestimmte Bereiche als nicht ausführbar zu markieren. Dadurch wird eingeschleuster Schadcode nicht ausgeführt. In Software gibt es die Möglichkeit einen Canary einzufügen. Dabei handelt es sich um einen zufälligen Wert, vor der Return Adresse steht. Wenn bei einem Buffer Overflow die Return Adresse überschrieben wird, dann wird zuvor der Canary überschrieben. Falls dieser also nicht mehr in Takt vorhanden ist, dann können Buffer Overflows damit erkannt werden.
+
+\paragraph{e) Wozu verwendet man Shellcodes?}
+Shellcodes werden verwendet um eine Konsole zu öffnen. Als angreifende Person ist es möglich, darüber eine Shell z.B. mit Adminrechten zu öffnen.
+
+\paragraph{f) Was ist NOP-Sliding?}
+Unter NOP-Sliding versteht man die Technik, bei einem Buffer Overflow mehrere NOPs vor dem Schadcode einzubauen. Dies macht man, da es bei Buffer Overflows häufig schwierig ist genau die richtige Adresse zu treffen, um das zu erleichtern, werden NOPs hinzugefügt, welche nichts bewirken. Zudem werden Systemabstürze verhindert, weil keine ungültigen Befehle ausgeführt werden.
+
+\paragraph{g) Beschreiben Sie, wie Sie ein statisches und ein dynamisches array of char der Größe 100 in C erzeugen. Welcher Ansatz führt eher dazu, dass man einen Buffer Overflow anfälligen Code generiert.}
+
+Ein statisches Array kann mit folgender Zeile erzeugt werden:\\
+char statischesArray[100];\\
+
+Ein dynamisches Array wird so erzeugt:\\
+ptr = (char*) malloc(100 * sizeof(char));\\
+
+Bei einem statischen Array wird der Speicherplatz direkt auf dem Stack reserviert, Bei dem dynamischen Array wird der Speicherplatz hingegen auf dem Heap reserviert. Aus diesem Grund ist auch das statische Array anfälliger für Buffer Overflows, weil bei diesem Angriff häufig ausgenutzt wird, dass der Buffer auf dem Stack liegt und somit lokale Variablen und Rücksprungadressen überschrieben werden können.
+
+\paragraph{h) Wie lautet die Little Endian Darstellung von 0x7C239088?}
+0x8890237C
+
+\paragraph{i) Was bedeutet die Anweisung jmp esp? Wofür benötigt man diese zur Nutzung von Buffer Overflows? Recherchieren Sie, ob es eine Verwendung des JMP ESP Befehls gibt, die nicht mit der Verwendung bei Buffer overflows zusammenhängt. Tipp: betrachten Sie den Befehl in seiner Maschinendarstellung, sprich den Mnemonic Zahlenwert/Opcode.}
+
+\paragraph{j) Nennen Sie mindestens zwei Verschleierungsmethoden (obfuscation)!}
+\begin{enumerate}
+	\item Umbenennung von z.B. Variablen und Methoden
+	\item Einfügen von totem Code
+\end{enumerate}
+
