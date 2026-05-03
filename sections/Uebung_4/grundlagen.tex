@@ -34,7 +34,9 @@ Bei einem statischen Array wird der Speicherplatz direkt auf dem Stack reservier
 \noindent 0x8890237C
 
 \paragraph{i) Was bedeutet die Anweisung jmp esp? Wofür benötigt man diese zur Nutzung von Buffer Overflows? Recherchieren Sie, ob es eine Verwendung des JMP ESP Befehls gibt, die nicht mit der Verwendung bei Buffer overflows zusammenhängt. Tipp: betrachten Sie den Befehl in seiner Maschinendarstellung, sprich den Mnemonic Zahlenwert/Opcode.}~\\
-\noindent 
+\noindent Die Anweisung \textit{jmp esp} bedeutet, dass das Programm dahin springt, wo aktuell der Stack-Pointer hinzeigt. Häufig wissen Angreifer bei einem Buffer Overflow nicht genau die Adresse, wo der Schadcode letztendlich liegt. Um den Schadcode zur Ausführung zu bringen muss die Adresse des Schadcodes in den IP geschrieben werden. Dabei kann \textit{jmp esp} helfen. Es ist häufig einfach herauszufinden, wo ein Aufruf des Befehls \textit{jmp esp} liegt. Dann kann die return Adresse mit dieser Adresse überschrieben werden. Entsprechend wird nach dem Return, der \textit{jmp esp} Befehl ausgeführt. Nach dem Return wird auch der Stack-Pointer erhöht. Die Idee ist es, dass ein Angreifer Schadcode an die Stelle nach der Return-Adresse positioniert. Durch die Erhöhung des Stack-Pointers nach dem Return zeigt der Stack-Pointer auf den Schadcode. Wenn dann durch \textit{jmp esp} dahin gesprungen wird, wird entsprechend der Schadcode ausgeführt.
+
+Anwendung von \textit{jmp esp} außerhalb von Buffer Overflows gibt es z.B. bei Just in Time Compilern, welche zur Laufzeit Maschinencode generieren. Um diesen direkt auszuführen, könnte \textit{jmp esp} verwendet werden.
 
 \paragraph{j) Nennen Sie mindestens zwei Verschleierungsmethoden (obfuscation)!}~\\
 \begin{enumerate}
