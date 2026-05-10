@@ -1,0 +1,33 @@
+\section{Aircrack und Co}
+\subsection{Angriff auf WEP Verbindung}
+Zu Beginn des Angriffs wurde vom Kali-Linux-Gerät aus eine SSH-Verbindung zur Servermaschine aufgebaut. Auf dieser wurde anschließend die vorgesehene Simulation gestartet.\\
+Im nächsten Schritt wurde mit dem Tool \texttt{airodump-ng} der Netzwerkverkehr des Access Points mitgeschnitten. Der Befehl lautete:
+\begin{verbatim}
+airodump-ng ap2-wlan1 -w capture
+\end{verbatim}
+Dabei wurden viele Pakete bzw. Initialisierungsvektoren (IVs) gesammelt.
+Nachdem genügend Daten aufgezeichnet wurden, konnte mit \texttt{aircrack-ng} der WEP-Schlüssel rekonstruiert werden. Dazu wurde die erzeugte Capture-Datei verwendet:
+\begin{verbatim}
+aircrack-ng capture.cap
+\end{verbatim}
+Aufgrund der ausreichenden Anzahl an IVs konnte der Schlüssel erfolgreich ermittelt werden:
+\begin{verbatim}
+KEY FOUND! [00:FA:3C:7C:A6:73:E0:43:73:FD:21:1E:DC]
+\end{verbatim}
+
+\subsection{WPA2}{
+Zunächst wurde eine SSH-Verbindung zum Server aufgebaut und die entsprechende Simulation gestartet.\\
+Anschließend wurde \texttt{airodump-ng} verwendet, um die BSSID sowie den genutzten Kanal des Access Points zu ermitteln. Zusätzlich konnte in der Spalte \texttt{STATION} die MAC-Adresse eines verbundenen Clients abgelesen werden.\\
+Mit diesen Informationen wurde parallel weiterhin Netzwerkverkehr mit \texttt{airodump-ng} aufgezeichnet. Danach kam \texttt{aireplay-ng} zum Einsatz, um gezielt Deauth-Pakete zu senden und eine Neuverbindung zu erzwingen:
+\begin{verbatim}
+aireplay-ng -0 15 -a [BSSID_DES_ROUTERS] -c [MAC_DES_CLIENTS] ap2-wlan1
+\end{verbatim}
+Durch diesen Angriff wurde der Client kurzzeitig getrennt und erneut zur Verbindung gezwungen, wodurch EAOPL-Packete zum 4 Wege Handshake aufgezeichnet werden konnten.
+Die dabei aufgezeichneten Daten wurden anschließend zusammen mit einer Passwortliste an \texttt{aircrack-ng} übergeben, um den Schlüssel zu ermitteln:
+\begin{verbatim}
+aircrack-ng capture.cap -w CommonPasswords.txt
+\end{verbatim}
+Der Angriff war erfolgreich und das Passwort konnte rekonstruiert werden:
+\begin{verbatim}
+KEY FOUND! [sabrina0000]
+\end{verbatim}

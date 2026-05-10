@@ -1,0 +1,49 @@
+\section{Verschiedene Angriffe}
+\subsection{Beschreiben Sie, wie ein Bleichenbacher Padding-Orakel (vgl. Vorlesungsskript) grundsätzlich funktioniert.}
+Als Basis für den Bleichenbacher Padding-Orakel-Angriff ist die RSA-PKCS\#1 v1.5 Verschlüsselung, welche das Basis-RSA-Verfahren um ein Padding der Message erweitert.\\
+Also bevor die Nachricht $[c = m^{e} \mod N]$ verschlüsselt wird, wird die Message mit einem Padding erweitert, welches nach folgender Struktur aufgebaut wird:
+\begin{verbatim}
+    m:=00||02||PS||00||m
+\end{verbatim}
+N ist ein RSA-Modulus mit $|N| = L$ Byte\\
+Padding von m mit $|m| \leq L-11$\\ %Weil Padding wohl Platz braucht, nochmal schauen. Im RFC-Standard auch beschrieben -11, aber nicht warum "https://www.rfc-editor.org/rfc/rfc8017#section-7.2"
+PS ist dabei ein zufälliger Byte-String, der keine Nullbytes enthält und gebildet wird: $(L-3- |m|)$\\
+m ist dann ein L-Byte-String und als kann als Zahl interpretiert werden. Dabei gilt: $m \leq N$\\[0.5cm]
+Damit ist nun die Grundlagen gegeben, um folglich den Angriff durchzuführen. Das Ziel ist es den Klartext $m$ zu bestimmen:\\
+Der Server, mit dem kommuniziert wird, gibt eine Fehlermeldung zurück, falls das Padding falsch ist. Dadurch lässt sich dieser Server als Orakel verwenden.\\
+Wenn die ersten zwei Bytes die Form $00||02$ haben, dann gilt für den Bleichenbacher-Angriff die Ungleichung $2 \cdot B \leq c^d \mod N < 3 \cdot B$\\
+Nun kann ein abgefangenen Ciphertext C, von dem bekannt ist, dass das Padding korrekt ist 
+
+Nun wird ein abgefangener Ciphertext C benötigt, von dem bekannt ist, dass das Padding korrekt ist. Aufgrund der Homomorphie-Eigenschafft von RSA gilt für alle $m_1, m_2 \in M$:
+\[
+\begin{aligned}
+E(m_1) \cdot E(m_2)
+&= (m_1^{e} \pmod{n}) \cdot (m_2^{e} \pmod{n}) \\
+&= (m_1 \cdot m_2)^{e} \pmod{n} \\
+&= E(m_1 \cdot m_2)
+\end{aligned}
+\]
+Somit kann durch die Multiplikation von zwei Ciphertexten ein neuer Ciphertext erhalten werden, der entschlüsselt werden kann. Genau diese Eigenschafft wird bei dem Bleichenbacher-Angriff ausgenutzt. Es ist möglich einen neuen Ciphertext der Form: $c` = c \cdot s^{e} \ mod\ N$ zu erstellen und diesen mit dem abgefangenen Ciphertext zu multiplizieren. Das Ergebnis wird dann an den Server geschickt. Der Server verrät dann, ob das Padding korrekt war oder nicht. Mit der Information zu dem Padding und dem Wissen, welche Zahl hinter dem zweiten Chiphertext steht, kann ein Intervall gebildet werden, in dem der ursprüngliche Klartext liegt. Dieser Vorgang kann nun beliebig Oft wiederholt werden. Somit ergeben sich immer mehr Intervalle in dem der ursprüngliche Klartext $m$ liegt. Wenn die Schnittmenge der Intervalle nur noch ein Element enthält, dann ist dies der gesuchte Klartext.
+Der Angriff nutzt somit die Kombination aus der strukturierten Padding-Bedingung und der durch den Server bereitgestellten Oracle-Information, um den Klartext schrittweise vollständig zu rekonstruieren.
+
+\subsection{Beschreiben Sie kurz und knapp die Grundidee von „Drown“ und wie man diesen Angriff verhindern kann.}
+Bei dem Drown-Angriff benutzen Client und Server eine Orakel sicherer TLS-Version (TLS 1.3). Der Angreifer fängt Ciphertext $\mathrm{Enc}(pk_{\mathrm{RSA}},\, PMS)$
+ab und öffnet eine neue Verbindung zum Server, sagt diesem aber, dass er SSLv2 benutzen will, und kann dann mit dem abgefangenen und der richtigen Version am Server den Bleichenbacher-Orakel-Angriff durchführen. Wichtig ist, dass dasselbe RSA-Verfahren für TLS und SSLv2 verwendet wird.
+\\
+\textbf{Verhinderung:} \\
+\begin{itemize}
+  \item SSLv2 deaktivieren
+\end{itemize}
+
+\subsection{Beschreiben Sie kurz und knapp die Grundidee von „Crime“ und wie man diesen Angriff verhindern kann. Gehen Sie insbesondere darauf ein, worauf es der Angreifer bei diesem Angriff abgesehen hat.}
+Der Angriff „Crime“ hat das Ziel des Diebstahls von HTTP-Cookies, da Cookies häufig auch Login-Tokens beinhalten. Dafür wird ausgenutzt, dass TLS-Kompression benutzt wird, also auf Ebene des TLS-Protokolls. Das Problem ist Compress-then-Encrypt, da nun der Angreifer Ciphertext einfließen lassen kann, und sollte er ein richtiges Zeichen vom Cookie beinhalten, dann wird das Ergebnis kürzer als erwartet, weil gleiche Abschnitte komprimiert werden. \\
+Bsp.:\\
+\begin{verbatim}
+    Cookie: session=ABC123
+    q=session=A -> vom Angreifer hinzugefügt
+\end{verbatim}
+Nun sieht die TLS-Kompression, dass sie session=A schon kennt und komprimiert dies, was dazu führt, dass der Output kürzer ist als erwartet und der Angreifer bestätigt bekommt, dass das A richtig ist.\\
+Also Der Angreifer erkennt die Korrektheit seines Guess anhand der Länge des Ciphertexts.
+
+\subsection{Warum kann der Angreifer bei Crime und Poodle in der Regel nicht direkt das Cookie via XSS in modernen Browsern auslesen?}
+Sicherheitsmaßnahme von Browsern gegen Angriffe, wie z.B. Cookie-Diebstahl per XSS (Same-Origin-Policy). 

@@ -1,0 +1,26 @@
+\section{Internetrecherche}
+\subsection{Geben Sie kurze und knappe Definition für den Begriff 2-Faktor-Authentifizierung}
+Hier wird für eine knappe Definition die Erklärung vom BSI zurhand genommen.
+\begin{quote}
+ Zwei-Faktor-Authentisierung (2FA) gibt es in zahlreichen Varianten. Einige ergänzen das zuvor eingegebene Passwort um einen zusätzlichen Faktor, andere ersetzen das vorherige Login mit Passwort komplett durch eine direkte Kombination zweier Faktoren...\\
+Eine Authentisierung mittels mehrerer Faktoren beginnt in vielen Fällen mit der gewöhnlichen Eingabe eines guten Passworts. Das System, in das sich Nutzerin oder Nutzer einloggen möchten, bestätigt daraufhin die Richtigkeit des eingegebenen Kennworts. Dies führt jedoch nicht - wie bei einfachen Systemen üblich - direkt zum gewünschten Inhalt, sondern zu einer weiteren Schranke.\\
+Viele übliche Zwei-Faktor-Systeme greifen nach der Passwortabfrage auf externe Systeme zurück, um eine zweistufige Überprüfung der Nutzerin oder des Nutzers durchzuführen. Das kann bedeuten, dass der Anbieter, bei dem Sie sich anmelden möchten, einen Bestätigungscode an ein weiteres Ihrer Geräte sendet, z. B. Ihr Smartphone. Der zweite Faktor kann allerdings auch Ihr Fingerabdruck auf einem entsprechenden Sensor oder die Verwendung eines USB-Tokens oder einer Chipkarte sein. Erst wenn sich auch dieses Mittel zur Identitätsbestätigung in Ihrem Besitz befindet, sind Sie in der Lage, die angeforderten Inhalte aufzurufen und den Online-Dienst oder das Gerät zu benutzen.
+\end{quote}
+\cite{bsi_2fa}\\
+Heißt knapp zusammengefasst, vorher 1 Authentifizierungsmerkmal und nun sind 2 Faktoren bzw. Authentifizierungsmerkmale nötig.
+\clearpage
+\subsection{Nennen Sie zwei Vereinfachungen, die die NIST in den letzten Jahren für den Umgang mit Passwörtern eingeführt hat.}
+
+NIST ist das National Institute of Standards and Technology und ist verantwortlich für Standardisierungsprozesse in verschiedenen Bereichen, unter anderem auch Informationssicherheit. So haben sie auch Richtliniendokumente für Passwörter, damit diese als sicher einzustufen sind. Hier gab es eine aktualisierte Version vom 26. August.\cite{nist_sp800_63_4_2025} Im Abschnitt SP 800-63B geht es um Passwortsicherheit und was dabei zu beachten ist. Zwei zentrale Vereinfachungen, die sich hier nennen lassen, sind zum einen:\\
+\begin{quote}
+(NIST 2025) Verifiers and CSPs SHALL NOT impose other composition rules (e.g., requiring mixtures of different character types) for passwords. 
+\end{quote}
+Hier hat es sich für den Nutzer vereinfacht, da Verifier nun nicht mehr Komplexitätsregeln erzwingen sollen. Vorher war es empfohlen, keine Regeln dieser Art aufzustellen und nun ist es mit dem Keyword \textit{Shall Not} verboten. Das erleichtert es dem User, einfacher merkbare Passwörter zu wählen.\\ 
+Siehe auch Vorgängerversion \cite{nist_800_63_3_2017}\\
+Zweite Änderung die benannt werden kann :
+\begin{quote}
+(NIST 2025) Verifiers and CSPs SHALL NOT require subscribers to change passwords periodically. However, verifiers SHALL force a change if there is evidence that the authenticator has been compromised.
+\end{quote}
+Auch ähnlich hier: vorher war es empfohlen, Subscriber nicht zu zwingen, das Passwort nach einer bestimmten Zeit zu ändern, und mit der neueren Publication ist es nun endgültig verboten. Macht es also einfacher für den User, da er sich nicht regelmäßig ein neues Passwort merken muss.
+
+%shall not -> followed strictly , SHOULD NOT -> recomended 

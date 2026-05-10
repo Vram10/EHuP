@@ -1,0 +1,63 @@
+\section{WEP}
+\subsection{Wie funktioniert Keystream-Reuse bei WEP?}
+Der zur Verschlüsselung eingesetzte Key ist nur vom Initialvektor $IV$ und vom geheimen Schlüssel $k$ abhängig. $IV$ und $k$ werden mit dem RC4-Algorithmus zum Verschlüsselungs-Key $RC4(IV,k)$ verarbeitet. Dabei bleibt $k$ konstant und der $IV$ wird (echt-)zufällig erzeugt.
+
+Besitzt man nun eine bekannte Nachricht $m_0$ mit dem dazugehörigen Chiffrat $c_0$, so kann ein Known-Plaintext-Angriff durchgefürht werden, sodass man den geheimen Verschlüsselungs-Key $RC4(IV, k)$ erhält:
+$$
+c_0 = m_0 \oplus RC4(IV,k) \Leftrightarrow c_0 \oplus m_0 = RC4(IV,k)
+$$
+Da das WEP-Protokoll keinen Replay-Schutz besitzt, kann der nun gewonnene Verschlüsselungs-Key $RC4(IV,k)$ wiederverwendet werden. Man erstelle eine beliebige Nachhricht $m_1$ und verschlüssele sie per:
+$$
+c_1 = m_1 \oplus RC4(IV,k)
+$$
+Somit kann der Keystream wiederverwendet werden.
+
+\subsection{Warum ist Keystream-Reuse möglich und so effizient?}
+\label{sec:warum_effizient}
+Wie bereits erwähnt, besitzt der WEP keinen Replay-Schutz. Das heißt, dass derselbe IV mehrmals verwendet werden kann.
+
+Überdies ist der $IV$ mit seinen 24 Bit nicht gerade groß, weshalb es relativ schnell zu Kollisionen kommt, also ein bereits verwendeter IV erneut verwendet wird. Erschwerend kommt das Geburtstagsparadoxon hinzu, weshalb bereits nach $\lceil 1,2 \cdot 2^{12} \rceil = 4916$ erzeugten Chiffraten (bzw. $IVs$) eine Kollision zu erwarten ist (siehe \ref{sec:birthday_paradox}). Werden zwei solcher Chiffrate mit demselben $RC4(IV,k)$ miteineander xoeriert ($\oplus$), so ergiebt sich die folgende Rechnung:
+$$
+c_0 \oplus c_1 = [m_0 \oplus RC4(IV,k)] \oplus [m_1 \oplus RC4(IV,k)] = m_0 \oplus m_1
+$$
+Nun gibt es Konstellationen, bei denen $m_0$ und $m_1$ aus $c_0 \oplus c_1 = m_0 \oplus m_1$ gewonnen werden können. Beispielsweise bei bekannten Protokollstrukturen oder wenn eine Nachricht aktiv erzeugt werden kann.
+
+\subsection{Warum reicht es nicht aus, den IV auf 32 bit zu verlängern? Begründen Sie ihre Antwort mit Hilfe des „Birthday-Paradox“.}
+\label{sec:birthday_paradox}
+Das sogenannte \textit{Geburtstagsparadoxon} ist ein Gedankenexperiment, bei dem das tatsächliche Ergebnis sehr von der intuitiven Vermutung abweicht. Es geht um die Fragestellung, bei wie vielen Menschen in einem Raum die Wahrscheinlichkeit $p\geq 0,5$ ist, dass mindestens zwei der Versammelten am selben Tag Geburtstag haben. Wider Erwarten liegt die dafür nötige Personenanzahl bei $23$.
+
+Die Rechnung besagt, dass bei einer Menge $M$ der Kardinalität $k$ gilt, dass nach $\lceil 1,2 \cdot \sqrt{k} \rceil$ Ziehungen mit zurücklegen eine Kollision zu erwarten ist. Also:
+$$
+P(k) = \lceil 1,2 \cdot \sqrt{k} \rceil
+$$
+Im Falle des Geburtstags-Beispiels:
+$$
+P(Geburtstagskollision) = P(k=365) = \lceil 1,2 \cdot \sqrt{365} \rceil = 23
+$$
+Übertragen auf den $IV$, sieht die Rechnung genauso aus. Bei $32$ Bit gibt es insgesamt $2^{32}$ verschiedene Vektoren, also ist die Kardinalität $k=32$ . Es gilt:
+$$
+P(Kollision) = P(k=2^{32}) = \lceil 1,2 \cdot \sqrt{2^{32}} \rceil = \lceil 1,2 \cdot 2^{16} \rceil = 78644
+$$
+Das ist zwar mehr als die $4916$ bei \ref{sec:warum_effizient}, jedoch handelt es sich nur um das knapp 16-fache.
+
+\subsection{Warum ist eine Modifikation von WEP-Nachrichten möglich? Welche Angriffe sind dadurch denkbar?}
+Die WEP-Prüfsumme ist linear, also gilt:
+$$
+CRC(m_0 \oplus m_1) = CRC(m_0) \oplus CRC(m_1)
+$$
+Diese Eigenschaft kann ausgenutzt werden. Man erstelle eine beliebige Nachricht $m_0$, bestimme die dazugehörige Prüfsumme $CRC(m_0)$ und konkateniere diese zu:
+$$
+[m_0 || CRC(m_0)]
+$$
+Nun kann dieser Datenstrom mit einem beliebigen Abgefangenen Chiffrat $c_1$ xoeriert werden:
+$$
+\begin{aligned}
+c_2 &= [m_0 || CRC(m_0)] \oplus c_1 \\
+        &= [m_0 || CRC(m_0)] \oplus [m_1||CRC(m_1)] \oplus RC4(IV,k) \\
+        &= [m_0 \oplus m_1 || CRC(m_0) \oplus CRC(m_1)] \oplus RC4(IV,k)
+\end{aligned}
+$$
+Wie in der Rechnung veranschauligt, ergibt $c_2$ dank der Linearität der WEP-Prüfsumme ein gültiges Chiffrat.
+
+\subsection{Wie könnte man diese Angriffe verhindern, wenn man trotzdem weiterhin eine Stromchiffre verwenden möchte?}
+Diese Angriffe werden verhindet, indem ein Replay-Schutz verwendet wird und indem ein nicht-linearer MIC-Algorithmus verwendet wird.

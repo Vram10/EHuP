@@ -1,0 +1,41 @@
+%Author Jonas Baumann
+\section{WPA3}
+\subsection{Unterschiede beim WPA3-Handshake im Vergleich zu WPA2}
+Beim WPA3-Handshake wird \textit{Simultaneous Authentication of Equals (SAE)} verwendet, auch bekannt als \textit{Dragonfly Key Exchange}.
+Dabei handelt es sich um ein Verfahren, das auf einem Diffie-Hellman-ähnlichen Schlüsselaustausch basiert. Beide Kommunikationspartner einigen sich zunächst auf gemeinsame öffentlichen Modulus $q$.\\
+$p$ ist ein Punkt auf der elliptischen Kurve, die dem Verfahren zugrunde liegt, und bildet sich zusammen mit dem PSK, einem Counter sowie den Peer-IDs der beiden Teilnehmer zu einem Wert $x$, der gehasht wird. Anschließend wird geprüft, ob ein Kurvenpunkt $P(x,y)$ auf der elliptischen Kurve gebildet werden kann.
+\\
+Alice und Bob wählen jeweils einen privaten Wert $r_A, r_B$ sowie Masken $m_A, m_B$, zweiteres um das Verfahren patentfrei zu machen:
+\begin{align*}
+s_A &= (r_A + m_A) \mod q, & E_A &= - m_A \cdot P \\
+s_B &= (r_B + m_B) \mod q, & E_B &= - m_B \cdot P
+\end{align*}
+Die Übertragung erfolgt über die öffentlichen Werte:
+\begin{align*}
+\text{Alice} &\rightarrow \text{Bob}: (s_A, E_A) \\
+\text{Bob} &\rightarrow \text{Alice}: (s_B, E_B)
+\end{align*}
+Berechnung des gemeinsamen Schlüssels unter Verwendung der Masken:
+\begin{align*}
+K &= r_A \cdot (s_B \cdot P + E_B) && \text{(Alice)} \\
+K &= r_B \cdot (s_A \cdot P + E_A) && \text{(Bob)}
+\end{align*}
+Abschließend wird die Integrität mit einem HMAC geprüft:
+\begin{align*}
+\kappa &= \text{Hash}(K) \\
+c_A &= \text{HMAC}(\kappa, s_A, E_A, s_B, E_B) \\
+c_B &= \text{HMAC}(\kappa, s_B, E_B, s_A, E_A)
+\end{align*}
+\textbf{Ergebnis:} Alice und Bob haben denselben Sitzungsschlüssel $K$ unabhängig berechnet, authentifizieren sich gegenseitig und übertragen niemals das Passwort direkt.\\
+Zusätzlich bietet SAE sogenannte \textit{Forward Secrecy}. Das bedeutet, dass selbst wenn das Passwort kompromittiert wird, zuvor aufgezeichnete Sitzungen nicht nachträglich entschlüsselt werden können. Durch zufällig gewählte Geheimwerte.Jeder Sitzungsschlüssel ist somit nur für die jeweilige Sitzung gültig und kann nicht zur Entschlüsselung vergangener Kommunikation verwendet werden.\\
+
+\subsection{Wie wird in WPA3 ein MitM-Angriff verhindert, wenn der PSK unbekannt ist?}
+Ein Man-in-the-Middle-Angriff ist in WPA3 dann verhindert, wenn der Pre-Shared Key unbekannt ist. Client und Server nutzen ein Passwort, das beide kennen, aber niemals direkt übertragen und erzeugen damit einen Session Key. Wie bereits in Abschnitt 1 beschrieben, kann ohne Kenntnis des PSK der Session Key nicht rekonstruiert werden. Selbst wenn ein Angreifer die Nachrichten oder auch die Nonces abfängt, kann er somit nicht mitlesen.
+
+\subsection{Warum erhöht sich die Passwortsuche (Brutforce) um 256 Bit beim SAE Verfahren auf elliptische Kurven?}
+In WPA3-SAE werden nur elliptische Kurven mit einer Gruppenordnung von mindestens 256 Bit verwendet. \\
+Mit WPA3 ist es nicht mehr möglich einen Offline Angirff durchzuführen, da fürs raten des Passwortes interaktion mit dem Acesspoint nötig ist für Verifikation und ausstausch der Nouncen.\\
+Bei SAE muss für jedes Passwort ein neuer Punkt P auf der elliptischen Kurve berechnet werden. Dadurch wird jeder Brute-Force-Versuch deutlich teurer als bei WPA2.
+
+\subsection{Warum kann ein Angreifer (kein MitM-Angriff!) trotz Kenntnis des PSK die Kommunikation nicht mitlesen?}
+Selbst wenn ein Angreifer den Pre-Shared Key (PSK) kennt, kann er die Kommunikation nicht entschlüsseln. In WPA3 wird durch SAE für jede Sitzung ein neuer Schlüssel mittels Diffie-Hellman erzeugt (Forward Secrecy). Der PSK allein reicht daher nicht aus, um den Session Key zu berechnen und die Kommunikation mitzulesen, da der Angreifer keine Kenntnis der verwendeten Nonce hat, die für die Berechnung des Sitzungsschlüssels erforderlich sind.
