@@ -1,0 +1,91 @@
+\section{Exploits}
+In dieser Aufgabe sollten Sie folgende Angriffe durchführen. Dokumentieren und erklären Sie die
+einzelnen Angriffe kurz und knapp. Dokumentieren Sie auch, dass und wie Sie alle hier genutzten
+Schwachstellen in Aufgabe 1 gefunden haben.
+
+\subsection{Begrifflichkeiten}
+\textit{Erklären Sie den Unterschied zwischen Bind\_shell, Reverse\_shell sowie staged und non-staged Payloads.
+}
+
+\subsubsection{Vergleich: Bind\_shell vs. Reverse\_shell}
+\begin{center}
+    \begin{tabular}{|p{4cm}|p{4cm}|}
+        \hline
+        \textbf{Bind\_shell (Direct Payload)} & \textbf{Reverse\_shell (Reverse Payload)} \\ 
+        \hline
+        Der Angreifer verbindet sich mit dem Opfer. & Das Opfer verbindet sich mit dem Angreifer. \\ \hline
+    \end{tabular}
+\end{center}
+
+
+\subsubsection{Vergleich: staged vs. non-staged Payload}
+\begin{center}
+    \begin{tabular}{|p{6cm}|p{6cm}|}
+        \hline
+        \textbf{staged Payload} & \textbf{non-staged Payload} \\
+        \hline
+        Staged Payloads unterteilen den Delivery-Prozess in zwei Schritte. Initial wird ein sogenannter Stager an das Zielsystem delivered. Dieser etabliert die Kommunikation und lädt anschließend den korrekten Payload herunter. Dadurch wird die initiale Payload-Size verringert, der Angreifer kann den zweiten Payload anpassen und der Payload umgeht gegebenenfalls Intrusion Detection System (IDS). & 
+        Non-Staged Payloads liefern den vollständigen Payload auf einmal. Dadurch entfallen die Vorteile der Staged-Variante. Die Vorteile dieser Variante sind jedoch Simplicity, Speed und Predictable Behavior. \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Angriff mittels Reverse Shell und John the Ripper}
+\textit{Greifen Sie Windows XP mittels dem Exploit ms08\_067\_netapi an und eröffnen Sie eine Meterpretersession mittels einer reverse\_shell. Erweitern Sie ihre Rechte und laden Sie die gespeicherten Windows Lan-Manager Hashes herunter. Ermitteln Sie die dazugehörigen Passwörter mittels eines geeigneten Passwortcrackers z.B. John the Ripper. Funktioniert der Angriff auch mit einer bind\_shell. Geben Sie eine Erklärung dafür. Warum macht es Sinn sich Login-Daten zu verschaffen, auch wenn man bereits durch einen exploit Zugriff auf das System hat? Erklären Sie in einem Satz, welche Schwäche obiger Exploit ausnutzt.
+}
+
+\textbf{TBD} %TODO: Julian
+
+\subsection{Angriff auf einen Gitlab-Server (vorübergehender Titel)}
+
+\textit{Greifen Sie den Gitlab Server an. Der Exploit muss hier selbst bestimmt werden. Die hier verwendete Gitlab Version ist dabei 12.4.0. Die IP des Servers ist zuvor durch Aufgabe 1. ermittelt worden.}
+
+\textit{Ein anfälliger Account ist dabei victim mit dem Passwort 12345678. Dieser Angriff funktioniert aber auch ohne vorher bekannten Nutzer, Sie müssten sich nur selbst am Server registrieren (was hier wegen dem fehlenden Mailserver und Internet nicht so ohne weiteres geht.). Ermitteln Sie den Inhalt der Datei flag.loot auf dem Server.}
+
+\textbf{TBD} %TODO: Jonas
+
+\subsection{Angriff auf mssql}
+\textit{Greifen Sie den weiteren XP-Rechner mittels \texttt{mssql\_login} an und verschaffen sich Sie Zugriff zum System mittels \texttt{mssql\_payload}.}\\
+
+\noindent Der Angriff wird via Metasploit durchgeführt. Der Angriff ist unter dem Path
+\begin{center}
+    \texttt{scanner/mssql/mssql\_login}
+\end{center}
+zu finden. Der Pfad konnte über einen einfachen \texttt{find}-Befehl ermittelt werden. Per \texttt{use}-Befehl in der msfconsole wird der Angriff ausgewählt. Dieser benötigt die Parameter \texttt{RHOST} := 192.168.1.32 und \texttt{RPORT} := 1113. Letzterer war deshalb besonders relevant, da der Standardport für diesen Angriff geschlossen ist. Außerdem erhält der Angriff die Wörterliste
+\begin{center}
+    \texttt{/usr/share/wordlists/rockyou.txt}
+\end{center}
+(Parameter \texttt{PASS\_FILE}), welche aber zunächst entpackt werden muss. Weitere wichtige Konfigurationen sind in \autoref{fig:mssql_login_show_options} zu sehen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_login_show_options.png}
+    \caption{Options for \texttt{mssql\_login}}
+    \label{fig:mssql_login_show_options}
+\end{figure}
+\noindent Mit den korrekten Konfigurationen wird der Exploit gestartet. Alle Passwörter der Wörterliste werden durchprobiert. Das Ergebnis des erfolgreichen Durchlaufs ist in \autoref{fig:mssql_login_exploit} zu sehen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_login_exploit.png}
+    \caption{\texttt{mssql\_login}}
+    \label{fig:mssql_login_exploit}
+\end{figure}
+\noindent Mit den gefundenen Anmeldedaten \texttt{sa:computer} für den Admin kann nun der Exploit \texttt{mssql\_payload} verwendet werden.
+Dieser ist unter dem Pfad
+\begin{center}
+    \texttt{windows/mssql/mssql\_payload}
+\end{center}
+zu finden. \autoref{fig:mssql_payload_show_options} zeigt die wichtigsten Konfigurationen für den Exploit, darunter wieder \texttt{RHOST} := 192.168.1.32 und \texttt{RPORT} := 1113, aber diesmal auch \texttt{USERNAME} := sa und \texttt{PASSWORD} := computer.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_payload_show_options.png}
+    \caption{Options for \texttt{mssql\_payload}}
+    \label{fig:mssql_payload_show_options}
+\end{figure}
+\noindent Der Befehl \texttt{exploit} startet den Angriff. Der Vorgang und das Ergebnis sind in \autoref{fig:mssql_payload_exploit} zu sehen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_payload_exploit.png}
+    \caption{\texttt{mssql\_payload}}
+    \label{fig:mssql_payload_exploit}
+\end{figure}
+Das Ergebnis ist eine Meterpreter-Shell (reverse\_shell). Der Angriff war ein Erfolg.
