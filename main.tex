@@ -37,6 +37,41 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
+% Begin: SQL-Listing definition
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{listings}
+% Farbdefinitionen für das SQL-Highlighting
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% SQL-Style definieren
+\lstdefinestyle{mysqlstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=SQL
+}
+\lstset{style=mysqlstyle}
+\renewcommand{\lstlistingname}{Code} % "Code" statt "Listing"
+\renewcommand{\lstlistlistingname}{Codeverzeichnis} % Ebd. auch in der Verzeichnisstruktur
+% End: SQL-Listing definition
+
 % ---------------- Dokument ----------------
 \begin{document}
 

@@ -5,9 +5,51 @@ haben Sie auch ein neues, angepasstes Kali erhalten, was alle benötigen Tools e
 \subsection{Zum warm werden}
 \textit{Nutzen Sie die Burp Suite, um eine SQL Injection gegen den Admin Login von Mutilidae2 durchzuführen. Dieser Server dient aber nur als Übungsziel und ist nicht, was Sie final angreifen sollen.}
 
-\textit{In Moodle finden Sie dazu die Datei Injections, um mittels Intruder die Anfälligkeiten des Servers auf diesen Angriff zu überprüfen.}
+\textit{In Moodle finden Sie dazu die Datei Injections, um mittels Intruder die Anfälligkeiten des Servers auf diesen Angriff zu überprüfen.}\\
 
-\textbf{TBD} %TODO: Julian
+\noindent Statt \texttt{Intruder} wird der \texttt{Repeater} verwendet. In \autoref{fig:sql_syntax_error} ist ein Login-Versuch mit einer missglückten SQL-Injection zu sehen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/a/sql_syntax_error.png}
+    \caption{Burb Suite: Failed login with Syntax Error}
+    \label{fig:sql_syntax_error}
+\end{figure} \noindent
+Diese unglückliche Fehlermeldung, gewährt uns Einblick in den Aufbau der im Backend verwendeten (und bereits vermuteten) SQL-Anfrage. \autoref{code:sql-query} zeigt diese nochmals formatiert.
+\begin{lstlisting}[language=SQL, caption={SQL-Abfrage im Backend}, label={code:sql-query}]
+    SELECT username
+    FROM accounts
+    WHERE username = '[USER]'
+    AND password = '[PASSWORD]'
+    ;
+\end{lstlisting}
+Eine mögliche Injection wäre also
+\begin{center}
+    \texttt{password := \textbf{passwort' OR '1'='1}}, mit \texttt{\textbf{Admin}} als Nutzernamen,
+\end{center}
+was injiziert zur SQL-Abfrage in \autoref{code:sql-query-injected} führt.
+\begin{lstlisting}[language=SQL, caption={Injected SQL-Query}, label={code:sql-query-injected}]
+    SELECT username
+    FROM accounts
+    WHERE username = 'Admin'
+    AND password = 'password:passwort' OR '1'='1'
+    ;
+\end{lstlisting}
+Die nun entstandene Tautologie bei der Boolean-Bedingung für \texttt{password} sorgt dafür, dass die Abfrage immer wahr ist, was zu einem Login führt, wie in \autoref{fig:sqli_login_success} zu sehen. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/a/sqli_login_success.png}
+    \caption{Burb Suite: Successful login with credentials}
+    \label{fig:sqli_login_success}
+\end{figure} \noindent
+Die verwendete SQL-Injection kann ebenfalls in einem echten Browser verwendet werden. \autoref{fig:admin_loggedin} zeigt den erfolgreichen Login unter Verwendung der genannten SQL-Injection.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/a/admin_loggedin.png}
+    \caption{Browser: Admin-Login Success}
+    \label{fig:admin_loggedin}
+\end{figure} \noindent
+Wird alternativ der \texttt{Intruder} verwendet, kann der hier gezeigte händische Vorgang automatisiert werden, indem verschiedene mögliche Eingaben (Datei \texttt{Injections} von Moodle) durchprobiert werden, bis ein Erfolg vorliegt.
+
 
 \subsection{Angriff gegen reales Szenario}
 \textit{Öffnen Sie die Webseite unter 192.168.1.161. Bei diesem Szenario ist es gestattet automatische Tools wie sqlmap und ZAP zu verwenden. Testen Sie aber durchaus auch manuell und vergleichen Sie ihre Ergebnisse von mit denen der automatischen Tools.}
@@ -17,4 +59,46 @@ haben Sie auch ein neues, angepasstes Kali erhalten, was alle benötigen Tools e
 \subsection{Blind Injection}
 \textit{Das inhaltlich gleiche Blog hat die vorherige Schwachstelle geschlossen und die IP gewechselt (192.168.1.162). Finden Sie dennoch einen Weg sich bspw. den Hashwert des mysql.user root Accounts und den des Admins der Webseite zu sichern? Vorab: es handelt sich hier um eine Blind Injection, erwarten Sie also keine direkte Rückgabe von Werten auf der Webseite. Auch könnten automatische Tools hier Probleme bekommen. Überlegen Sie, wo Blind Injections auf der Webseite vorkommen könnten, auf Basis, wie vermutlich im Hintergrund die Abfrage ausgeführt wird, um die Menge der zu prüfenden Formulare und Abfragen einzugrenzen. Den Aufbau der Datenbank sollten Sie ja aus der vorherigen Teilaufgabe mitgenommen haben.}
 
-\textbf{TBD} %TODO: Julian
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_parameter.png}
+    \caption{sqlmap-Parameter - Fehlversuch}
+    \label{fig:sql_map_parameter}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_1.png}
+    \caption{sqlmap: 1}
+    \label{fig:sql_map_auf_c_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_2.png}
+    \caption{sqlmap: 2}
+    \label{fig:sql_map_auf_c_2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_3.png}
+    \caption{sqlmap: 3}
+    \label{fig:sql_map_auf_c_3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_4.png}
+    \caption{sqlmap: 4}
+    \label{fig:sql_map_auf_c_4}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_erfolg.png}
+    \caption{sqlmap: Erfolg}
+    \label{fig:sql_map_erfolg}
+\end{figure}
