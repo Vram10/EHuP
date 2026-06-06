@@ -42,7 +42,37 @@ Schwachstellen in Aufgabe 1 gefunden haben.
 
 \textit{Ein anfälliger Account ist dabei victim mit dem Passwort 12345678. Dieser Angriff funktioniert aber auch ohne vorher bekannten Nutzer, Sie müssten sich nur selbst am Server registrieren (was hier wegen dem fehlenden Mailserver und Internet nicht so ohne weiteres geht.). Ermitteln Sie den Inhalt der Datei flag.loot auf dem Server.}
 
-\textbf{TBD} %TODO: Jonas
+Wir haben den Gitlab Server identifiziert in unserem NMAP Scan aus Aufgabe 1 und festegestellt es ist die 192.168.1.66.
+\\
+Haben dann folgend dadurch, dass uns die Version bekannt ist geschaut was Metasploit für Exploits anbietet für diese Version und sind über das Modul gitlab-file-read-rce gestoßen, mitdem wir es hinbekommen eine Reverse-Shell zu injezieren.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_angriff_optionen.png}
+	\caption{Optionen für Gitlab_angriff}}
+	\label{fig:GitlabOptionen}
+\end{figure}
+Nach Ausführung des Exploits haben wir eine Verbindung zu dem Gitlab-Server:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_exploit_start.png}
+	\caption{Exploit und Sessions open}}
+\label{fig:SessionOpen}
+\end{figure}
+Nun mussten wir aber Feststellen, dass die Shells die Benutzt wurden nicht ausreichend sind und zu wenig Rechte haben um das Flag auszulesen. Daher haben wir die Session und Verbindung die nicht Ruby ist Upgraded auf eine Meterpreter Shell.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_habenmeterpreter.png}
+	\caption{Upgrade auf Meterpreter Session}}
+\label{fig:Meterpreter}
+\end{figure}
+Schlussendlich mit der Meterpreter-Shell hatten wir dann genügend Rechte um das gesuchte Flag auslesen zu können\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_haben_flag.png}
+	\caption{Flag}}
+\label{fig:GitlabFlag}
+\end{figure}
+
 
 \subsection{Angriff auf mssql}
 \textit{Greifen Sie den weiteren XP-Rechner mittels \texttt{mssql\_login} an und verschaffen sich Sie Zugriff zum System mittels \texttt{mssql\_payload}.}\\
