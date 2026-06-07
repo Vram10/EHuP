@@ -99,14 +99,17 @@ Mit etwas Geduld wird der Angriff erfolgreich, zu sehen in \autoref{fig:john_fer
 
 Wir haben den Gitlab Server identifiziert in unserem NMAP Scan aus Aufgabe 1 und festegestellt es ist die 192.168.1.66.
 \\
-Haben dann folgend dadurch, dass uns die Version bekannt ist geschaut was Metasploit für Exploits anbietet für diese Version und sind über das Modul gitlab-file-read-rce gestoßen, mitdem wir es hinbekommen eine Reverse-Shell zu injezieren.
+Anschließend haben wir, da uns die verwendete Version bekannt war, recherchiert, welche Exploits für diese Version in Metasploit verfügbar sind. Dabei sind wir auf das Modul \texttt{gitlab-file-read-rce} gestoßen.\\
+Dieses Modul nutzt eine Schwachstelle aus, bei der Benutzereingaben nicht ausreichend validiert werden. Dadurch ist es möglich, beliebige Dateien vom Server auszulesen, insbesondere Konfigurationsdateien wie \texttt{database.yml} oder \texttt{secrets.yml}. Das Ziel besteht darin, den Secret Key des GitLab-Servers zu erlangen. Mit diesem Schlüssel können eigene Cookies oder Objekte erstellt und signiert werden, die vom GitLab-Server als vertrauenswürdig akzeptiert werden.\\
+Auf diese Weise können letztendlich Befehle auf dem Server ausgeführt werden. Unter anderem lässt sich damit eine Reverse Shell auf dem Zielsystem etablieren.\\
+Mithilfe dieses Exploits konnten wir erfolgreich eine Reverse Shell auf dem Server platzieren und haben dabei folgende Optionen ausgewählt.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_angriff_optionen.png}
 	\caption{Optionen für Gitlab\_angriff}
 	\label{fig:GitlabOptionen}
 \end{figure} \noindent
-Nach Ausführung des Exploits haben wir eine Verbindung zu dem Gitlab-Server:
+Mussten zusätzlich noch SSL = true setzen und haben nach Ausführung des Exploits eine Verbindung zu dem Gitlab-Server:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_exploit_start.png}
