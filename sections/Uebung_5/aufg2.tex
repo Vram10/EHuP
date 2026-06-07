@@ -29,12 +29,68 @@ Schwachstellen in Aufgabe 1 gefunden haben.
     \end{tabular}
 \end{center}
 
+% ======================================================================================================
 \subsection{Angriff mittels Reverse Shell und John the Ripper}
-\textit{Greifen Sie Windows XP mittels dem Exploit ms08\_067\_netapi an und eröffnen Sie eine Meterpretersession mittels einer reverse\_shell. Erweitern Sie ihre Rechte und laden Sie die gespeicherten Windows Lan-Manager Hashes herunter. Ermitteln Sie die dazugehörigen Passwörter mittels eines geeigneten Passwortcrackers z.B. John the Ripper. Funktioniert der Angriff auch mit einer bind\_shell. Geben Sie eine Erklärung dafür. Warum macht es Sinn sich Login-Daten zu verschaffen, auch wenn man bereits durch einen exploit Zugriff auf das System hat? Erklären Sie in einem Satz, welche Schwäche obiger Exploit ausnutzt.
-}
+\textit{Greifen Sie Windows XP mittels dem Exploit ms08\_067\_netapi an und eröffnen Sie eine Meterpretersession mittels einer reverse\_shell. Erweitern Sie ihre Rechte und laden Sie die gespeicherten Windows Lan-Manager Hashes herunter. Ermitteln Sie die dazugehörigen Passwörter mittels eines geeigneten Passwortcrackers z.B. John the Ripper. Funktioniert der Angriff auch mit einer bind\_shell. Geben Sie eine Erklärung dafür. Warum macht es Sinn sich Login-Daten zu verschaffen, auch wenn man bereits durch einen exploit Zugriff auf das System hat? Erklären Sie in einem Satz, welche Schwäche obiger Exploit ausnutzt.}\\
 
-\textbf{TBD} %TODO: Julian
+Für diesen Angriff wird der Exploit
+\begin{center}
+    \texttt{windows/smb/ms08\_067\_netapi}
+\end{center}
+verwendet. Als Konfigurationsdaten werden das Opfer als \texttt{RHOST} und der Angreifer als \texttt{LHOST} gesetzt. Außerdem wird die zu verwendende \texttt{PAYLOAD}
+\begin{center}
+    windows/meterpreter/reverse\_tcp
+\end{center}
+gesetzt. \autoref{fig:peter_success} zeigt diese Einstellungen und die erfolgreiche Ausführung des Exploits.
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/b/peter_config.png}
+%    \caption{ms08\_067\_netapi: Konfigurationen}
+%    \label{fig:peter_config}
+%\end{figure} \noindent
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/b/peter_success.png}
+    \caption{ms08\_067\_netapi + reverse\_tcp}
+    \label{fig:peter_success}
+\end{figure} \noindent
+Nach erfolgreichem Login wird \texttt{\$ hashdump} ausgeführt, was uns die Hashes liefert, zu sehen in \autoref{fig:peter_hashdump}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/b/peter_hashdump.png}
+    \caption{Meterpreter: Hashdump}
+    \label{fig:peter_hashdump}
+\end{figure} \noindent
+Mittels \texttt{John the Ripper} können diese geknackt werden. Dieses CLI-Tool nimmt eine hashlist entgegen und Argumente, wie diese geknackt werden soll. \autoref{fig:john_wordlist} zeigt die Wordlist-Option, bei dem ein Dictionary-Angriff auf die Passwörter durchgeführt wird. Es werden ein paar Erfolge verzeichnet, allerdings nicht vollständig.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/b/john_wordlist.png}
+    \caption{John the Ripper: Wordlist}
+    \label{fig:john_wordlist}
+\end{figure} \noindent
+\autoref{fig:john_4von5} zeigt, dass ein Paar Passwörter gefunden worden sind, aber nicht alle.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/b/john_4von5.png}
+    \caption{John the Ripper: Fast fertig}
+    \label{fig:john_4von5}
+\end{figure} \noindent
+\autoref{fig:john_incremental} zeigt die Verwendung der Incremental-Funktion, die einen Bruteforce durchführt.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/b/john_incremental.png}
+    \caption{John the Ripper: Incremental}
+    \label{fig:john_incremental}
+\end{figure} \noindent
+Mit etwas Geduld wird der Angriff erfolgreich, zu sehen in \autoref{fig:john_fertig}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/b/john_fertig.png}
+    \caption{John the Ripper: Erfolg}
+    \label{fig:john_fertig}
+\end{figure} \noindent
 
+% ======================================================================================================
 \subsection{Angriff auf einen Gitlab-Server (vorübergehender Titel)}
 
 \textit{Greifen Sie den Gitlab Server an. Der Exploit muss hier selbst bestimmt werden. Die hier verwendete Gitlab Version ist dabei 12.4.0. Die IP des Servers ist zuvor durch Aufgabe 1. ermittelt worden.}
@@ -49,7 +105,7 @@ Haben dann folgend dadurch, dass uns die Version bekannt ist geschaut was Metasp
 	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_angriff_optionen.png}
 	\caption{Optionen für Gitlab\_angriff}
 	\label{fig:GitlabOptionen}
-\end{figure}
+\end{figure} \noindent
 Nach Ausführung des Exploits haben wir eine Verbindung zu dem Gitlab-Server:
 \begin{figure}[H]
 	\centering
@@ -90,15 +146,15 @@ zu finden. Der Pfad konnte über einen einfachen \texttt{find}-Befehl ermittelt 
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_login_show_options.png}
     \caption{Options for \texttt{mssql\_login}}
     \label{fig:mssql_login_show_options}
-\end{figure}
-\noindent Mit den korrekten Konfigurationen wird der Exploit gestartet. Alle Passwörter der Wörterliste werden durchprobiert. Das Ergebnis des erfolgreichen Durchlaufs ist in \autoref{fig:mssql_login_exploit} zu sehen.
+\end{figure} \noindent
+Mit den korrekten Konfigurationen wird der Exploit gestartet. Alle Passwörter der Wörterliste werden durchprobiert. Das Ergebnis des erfolgreichen Durchlaufs ist in \autoref{fig:mssql_login_exploit} zu sehen.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_login_exploit.png}
     \caption{\texttt{mssql\_login}}
     \label{fig:mssql_login_exploit}
-\end{figure}
-\noindent Mit den gefundenen Anmeldedaten \texttt{sa:computer} für den Admin kann nun der Exploit \texttt{mssql\_payload} verwendet werden.
+\end{figure} \noindent
+Mit den gefundenen Anmeldedaten \texttt{sa:computer} für den Admin kann nun der Exploit \texttt{mssql\_payload} verwendet werden.
 Dieser ist unter dem Pfad
 \begin{center}
     \texttt{windows/mssql/mssql\_payload}
@@ -109,12 +165,12 @@ zu finden. \autoref{fig:mssql_payload_show_options} zeigt die wichtigsten Konfig
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_payload_show_options.png}
     \caption{Options for \texttt{mssql\_payload}}
     \label{fig:mssql_payload_show_options}
-\end{figure}
-\noindent Der Befehl \texttt{exploit} startet den Angriff. Der Vorgang und das Ergebnis sind in \autoref{fig:mssql_payload_exploit} zu sehen.
+\end{figure} \noindent
+Der Befehl \texttt{exploit} startet den Angriff. Der Vorgang und das Ergebnis sind in \autoref{fig:mssql_payload_exploit} zu sehen.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/d/mssql_payload_exploit.png}
     \caption{\texttt{mssql\_payload}}
     \label{fig:mssql_payload_exploit}
-\end{figure}
+\end{figure} \noindent
 Das Ergebnis ist eine Meterpreter-Shell (reverse\_shell). Der Angriff war ein Erfolg.
