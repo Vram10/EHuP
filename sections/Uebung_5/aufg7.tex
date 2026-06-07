@@ -57,48 +57,38 @@ Wird alternativ der \texttt{Intruder} verwendet, kann der hier gezeigte händisc
 \texttt{TBD (Jonas und/oder Marvin)} %TODO: Jonas und/oder Marvin
 
 \subsection{Blind Injection}
-\textit{Das inhaltlich gleiche Blog hat die vorherige Schwachstelle geschlossen und die IP gewechselt (192.168.1.162). Finden Sie dennoch einen Weg sich bspw. den Hashwert des mysql.user root Accounts und den des Admins der Webseite zu sichern? Vorab: es handelt sich hier um eine Blind Injection, erwarten Sie also keine direkte Rückgabe von Werten auf der Webseite. Auch könnten automatische Tools hier Probleme bekommen. Überlegen Sie, wo Blind Injections auf der Webseite vorkommen könnten, auf Basis, wie vermutlich im Hintergrund die Abfrage ausgeführt wird, um die Menge der zu prüfenden Formulare und Abfragen einzugrenzen. Den Aufbau der Datenbank sollten Sie ja aus der vorherigen Teilaufgabe mitgenommen haben.}
+\textit{Das inhaltlich gleiche Blog hat die vorherige Schwachstelle geschlossen und die IP gewechselt (192.168.1.162). Finden Sie dennoch einen Weg sich bspw. den Hashwert des mysql.user root Accounts und den des Admins der Webseite zu sichern? Vorab: es handelt sich hier um eine Blind Injection, erwarten Sie also keine direkte Rückgabe von Werten auf der Webseite. Auch könnten automatische Tools hier Probleme bekommen. Überlegen Sie, wo Blind Injections auf der Webseite vorkommen könnten, auf Basis, wie vermutlich im Hintergrund die Abfrage ausgeführt wird, um die Menge der zu prüfenden Formulare und Abfragen einzugrenzen. Den Aufbau der Datenbank sollten Sie ja aus der vorherigen Teilaufgabe mitgenommen haben.}\\
 
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_parameter.png}
-    \caption{sqlmap-Parameter - Fehlversuch}
-    \label{fig:sql_map_parameter}
-\end{figure}
-
+\noindent Dieser Angriff wird via \texttt{sqlmap} durchgeführt. Gestartet wird mit der parametrisierten Form, zu sehen von \autoref{fig:sql_map_auf_c_1} bis \autoref{fig:sql_map_erfolg}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_1.png}
-    \caption{sqlmap: 1}
+    \caption{sqlmap: 1/5}
     \label{fig:sql_map_auf_c_1}
 \end{figure}
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_2.png}
-    \caption{sqlmap: 2}
+    \caption{sqlmap: 2/5}
     \label{fig:sql_map_auf_c_2}
 \end{figure}
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_3.png}
-    \caption{sqlmap: 3}
+    \caption{sqlmap: 3/5}
     \label{fig:sql_map_auf_c_3}
 \end{figure}
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_auf_c_4.png}
-    \caption{sqlmap: 4}
+    \caption{sqlmap: 4/5}
     \label{fig:sql_map_auf_c_4}
 \end{figure}
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/c/sql_map_erfolg.png}
-    \caption{sqlmap: Erfolg}
+    \caption{sqlmap: 5/5}
     \label{fig:sql_map_erfolg}
 \end{figure}
+\textbf{Was haben wir jetzt eigentlich erreicht?}
+% TODO: Was haben wir jetzt eigentlich erreicht?
