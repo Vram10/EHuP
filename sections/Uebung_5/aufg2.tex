@@ -4,8 +4,7 @@ einzelnen Angriffe kurz und knapp. Dokumentieren Sie auch, dass und wie Sie alle
 Schwachstellen in Aufgabe 1 gefunden haben.
 
 \subsection{Begrifflichkeiten}
-\textit{Erklären Sie den Unterschied zwischen Bind\_shell, Reverse\_shell sowie staged und non-staged Payloads.
-}
+\textit{Erklären Sie den Unterschied zwischen Bind\_shell, Reverse\_shell sowie staged und non-staged Payloads.}
 
 \subsubsection{Vergleich: Bind\_shell vs. Reverse\_shell}
 \begin{center}
@@ -48,28 +47,28 @@ Haben dann folgend dadurch, dass uns die Version bekannt ist geschaut was Metasp
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_angriff_optionen.png}
-	\caption{Optionen für Gitlab_angriff}}
+	\caption{Optionen für Gitlab\_angriff}
 	\label{fig:GitlabOptionen}
 \end{figure}
 Nach Ausführung des Exploits haben wir eine Verbindung zu dem Gitlab-Server:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_exploit_start.png}
-	\caption{Exploit und Sessions open}}
+	\caption{Exploit und Sessions open}
 \label{fig:SessionOpen}
 \end{figure}
 Nun mussten wir aber Feststellen, dass die Shells die Benutzt wurden nicht ausreichend sind und zu wenig Rechte haben um das Flag auszulesen. Daher haben wir die Session und Verbindung die nicht Ruby ist Upgraded auf eine Meterpreter Shell.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_habenmeterpreter.png}
-	\caption{Upgrade auf Meterpreter Session}}
+	\caption{Upgrade auf Meterpreter Session}
 \label{fig:Meterpreter}
 \end{figure}
 Schlussendlich mit der Meterpreter-Shell hatten wir dann genügend Rechte um das gesuchte Flag auslesen zu können\\
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe2/Gitlab_haben_flag.png}
-	\caption{Flag}}
+	\caption{Flag}
 \label{fig:GitlabFlag}
 \end{figure}
 
