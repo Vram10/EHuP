@@ -91,13 +91,13 @@ Mit etwas Geduld wird der Angriff erfolgreich, zu sehen in \autoref{fig:john_fer
 \end{figure} \noindent
 
 % ======================================================================================================
-\subsection{Angriff auf einen Gitlab-Server (vorübergehender Titel)}
+\subsection{Angriff auf einen Gitlab-Server}
 
 \textit{Greifen Sie den Gitlab Server an. Der Exploit muss hier selbst bestimmt werden. Die hier verwendete Gitlab Version ist dabei 12.4.0. Die IP des Servers ist zuvor durch Aufgabe 1. ermittelt worden.}
 
 \textit{Ein anfälliger Account ist dabei victim mit dem Passwort 12345678. Dieser Angriff funktioniert aber auch ohne vorher bekannten Nutzer, Sie müssten sich nur selbst am Server registrieren (was hier wegen dem fehlenden Mailserver und Internet nicht so ohne weiteres geht.). Ermitteln Sie den Inhalt der Datei flag.loot auf dem Server.}
 
-Wir haben den Gitlab Server identifiziert in unserem NMAP Scan aus Aufgabe 1 und festegestellt es ist die 192.168.1.66.
+In unserem NMAP Scan aus Aufgabe 1 wurde festgestellt, dass der gesuchte Server die IP-Adresse 192.168.1.66 besitzt.
 \\
 Anschließend haben wir, da uns die verwendete Version bekannt war, recherchiert, welche Exploits für diese Version in Metasploit verfügbar sind. Dabei sind wir auf das Modul \texttt{gitlab-file-read-rce} gestoßen.\\
 Dieses Modul nutzt eine Schwachstelle aus, bei der Benutzereingaben nicht ausreichend validiert werden. Dadurch ist es möglich, beliebige Dateien vom Server auszulesen, insbesondere Konfigurationsdateien wie \texttt{database.yml} oder \texttt{secrets.yml}. Das Ziel besteht darin, den Secret Key des GitLab-Servers zu erlangen. Mit diesem Schlüssel können eigene Cookies oder Objekte erstellt und signiert werden, die vom GitLab-Server als vertrauenswürdig akzeptiert werden.\\
