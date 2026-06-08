@@ -54,7 +54,46 @@ Wird alternativ der \texttt{Intruder} verwendet, kann der hier gezeigte händisc
 \subsection{Angriff gegen reales Szenario}
 \textit{Öffnen Sie die Webseite unter 192.168.1.161. Bei diesem Szenario ist es gestattet automatische Tools wie sqlmap und ZAP zu verwenden. Testen Sie aber durchaus auch manuell und vergleichen Sie ihre Ergebnisse von mit denen der automatischen Tools.}
 
-\texttt{TBD (Jonas und/oder Marvin)} %TODO: Jonas und/oder Marvin
+Nun ging es gegen den Blog-Server auf der Adresse 192.168.1.161. Nach einigen Tests konnten wir feststellen, dass hier eine URL-basierte SQL-Injektion möglich ist. Dies wurde entdeckt, indem erneut einfache SQL-Injection-Statements in die URL eingefügt wurden. Dadurch konnten zusätzliche Inhalte angezeigt werden, die ursprünglich nicht auf der Webseite vorhanden waren, wie in der folgenden Abbildung zu sehen ist:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/b/Zusatzinhalt.png}
+	\caption{Zusätzlicher Inhalt durch SQL-Injektion}
+	\label{fig:sqluser315}
+\end{figure}
+\noindent
+Somit hatten wir den Bereich gefunden, den wir manipulieren konnten, um weitere Inhalte aus der Datenbank auszulesen. Mithilfe weiterer Recherche und unter Zuhilfenahme der Fehlermeldungen bei fehlerhaften SQL-Statements ergab sich folgender Befehl, mit dem ein Überblick über die vorhandenen Tabellen gewonnen werden konnte:
+\begin{verbatim}
+	id=1 AND 1=2 UNION SELECT 1, table_name,3,4,5,6,7,8,9,10,11,12,13
+	FROM information_schema.tables;--
+\end{verbatim}
+Um Informationen über die Spalten einzelner Tabellen zu erhalten, wurde die Anfrage entsprechend angepasst:
+\begin{verbatim}
+	UNION SELECT 1, column_name,3,4,5,6,7,8,9,10,11,12,13
+	FROM information_schema.columns
+	WHERE table_name='Tabellenname';--
+\end{verbatim}
+Das eigentliche Ziel bestand jedoch darin, Benutzerkonten sowie die zugehörigen Passwort-Hashes auszulesen.\\
+Dazu wurde die Anfrage erneut leicht modifiziert:
+\begin{verbatim}
+	id=15 AND 1=2 UNION SELECT 1, group_concat(user),3,4,5,6,7,8,9,10,11,12,13
+	FROM mysql.user;--
+\end{verbatim}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/b/User_DB}
+	\caption{Benutzer der Datenbank durch SQL-Injektion}
+	\label{fig:sqlUSER}
+\end{figure}
+\noindent
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Whakaahua/aufgabe7/b/PW_DB}
+	\caption{Passwort-Hashes durch SQL-Injektion}
+	\label{fig:sqlPW}
+\end{figure}
+\noindent
+Damit konnten die wesentlichen Informationen aus der Datenbank erfolgreich ausgelesen werden.
 
 \subsection{Blind Injection}
 \textit{Das inhaltlich gleiche Blog hat die vorherige Schwachstelle geschlossen und die IP gewechselt (192.168.1.162). Finden Sie dennoch einen Weg sich bspw. den Hashwert des mysql.user root Accounts und den des Admins der Webseite zu sichern? Vorab: es handelt sich hier um eine Blind Injection, erwarten Sie also keine direkte Rückgabe von Werten auf der Webseite. Auch könnten automatische Tools hier Probleme bekommen. Überlegen Sie, wo Blind Injections auf der Webseite vorkommen könnten, auf Basis, wie vermutlich im Hintergrund die Abfrage ausgeführt wird, um die Menge der zu prüfenden Formulare und Abfragen einzugrenzen. Den Aufbau der Datenbank sollten Sie ja aus der vorherigen Teilaufgabe mitgenommen haben.}\\
